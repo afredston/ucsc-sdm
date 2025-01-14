@@ -158,11 +158,16 @@ bio_curr_df$bin_ens <- ifelse(bio_curr_df$pred_ens > eval_ens$thresh, 1, 0)
 r_pred_curr <- rast(bio_curr_df[,-c(3:5)])
 plot(r_pred_curr)
 
-bio_fut_df <- terra::as.data.frame(bio_fut, xy = TRUE)
-colnames(bio_fut_df)
-bio_fut_df$eo_mask <- mecofun::eo_mask(avi_df[,pred], bio_fut_df[,pred]) # doesn't work because there is no "pred" col
 
-# this code also doesn't run because it's missing two more variables
+avi_df$bio_2 <- NULL
+avi_df$bio_14 <- NULL
+
+m_glm <- glm( Turdus_torquatus ~ bio_5 + I(bio_5^2), family='binomial', data=avi_df)
+m_rf <- randomForest( x=avi_df[,2], y=avi_df[,1], ntree=1000, nodesize=10, importance =T)
+
 bio_fut_df$pred_glm <- mecofun::predictSDM(m_glm, bio_fut_df)
-bio_fut_df$pred_rf <- mecofun::predictSDM(m_rf, bio_fut_df)
-bio_fut_df$pred_ens <- apply(bio_fut_df[,-c(1:5)],1,median)
+#bio_fut_df$pred_rf <- mecofun::predictSDM(m_rf, bio_fut_df)
+#bio_fut_df$pred_ens <- apply(bio_fut_df[,-c(1:5)],1,median)
+
+bio_fut_rast <- rast(bio_fut_df)
+plot(bio_fut_rast)
