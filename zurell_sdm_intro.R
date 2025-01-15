@@ -1,3 +1,4 @@
+# https://damariszurell.github.io/SDM-Intro/
 library(terra) # be sure that the raster package is not loaded, since a lot of terra functions are the same names 
 library(geodata)
 library(here)
